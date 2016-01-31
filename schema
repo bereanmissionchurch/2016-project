@@ -10,67 +10,70 @@ Roster
 
 mysql
 
+
+=========
 Tables:
+=========
 
-
-Attendance
+Attendance:W
 ----------
 Person
 Date
 
-TeamType
+TeamType:R
 ----------
 TeamType{AV/Events/Welcome/Worship/etc}
 
-Team
+Team:W
 ----------
 Person.id
 TeamType.id
 
-Region:
+Region:R
 ----------
 RegionName:VarChar
 
-SmallGroupMembership
+SmallGroupMembership:W
 -----------
 SmallGroup.Id
 Person.Id:Person
 
-SmallGroup
+SmallGroup:w
 -----------
 Leader.Id:Person
 DateStart:Date
 DateEnd:??
 Region:Region
 
-LunchTable //Foodserving
+LunchTable:W //Foodserving
 ------------
 PersonId:Person
 DateServed:Date
 IsLunch?
 
-Class
+Class:R
 -------------
 ClassType {Toddler,Nursery,SundaySchool}
 
-Teachers//NurserySundaySchool
+Teachers:W//NurserySundaySchool
 -------------
 Person.Id:Person
 DateServed:Date
 Type:Class.Id
 IsTeacher
 
-Children: //todo
+Children:W //todo
 -------------
 Parent1.Id
 Parent2.Id
 
-Person:
+Person:W
 --------------
 First Name
 Last Name
 Email
 Phone
+Image
 Address{
     Street
     City
@@ -86,4 +89,9 @@ Region:Region.id
 IsMember
 CreateDate:CurrentTimeStamp
 MaritalStatus: {Dating, Single, Married, ??Complicated}
+
+Oauth
+Google/facebook
+
+
 
