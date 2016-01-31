@@ -28,6 +28,7 @@ Team:W
 ----------
 Person.id
 TeamType.id
+IsLeader
 
 Region:R
 ----------
@@ -89,6 +90,31 @@ Region:Region.id
 IsMember
 CreateDate:CurrentTimeStamp
 MaritalStatus: {Dating, Single, Married, ??Complicated}
+
+WorshipSet:W
+--------------
+Song
+Date
+Identifier //for multiple sessions
+Leader:Person
+
+Songs:W
+----------
+SongTitle
+InsertDate
+LastPlayed
+BPM
+TotalPlayed
+
+Tag
+----------
+TagName
+
+SongTag
+----------
+Song
+Tag
+
 
 Oauth
 Google/facebook
