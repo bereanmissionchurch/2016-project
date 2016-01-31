@@ -1,0 +1,89 @@
+Visitors coming back
+
+Berean's History
+
+JSUB
+
+------
+Roster
+------
+
+mysql
+
+Tables:
+
+
+Attendance
+----------
+Person
+Date
+
+TeamType
+----------
+TeamType{AV/Events/Welcome/Worship/etc}
+
+Team
+----------
+Person.id
+TeamType.id
+
+Region:
+----------
+RegionName:VarChar
+
+SmallGroupMembership
+-----------
+SmallGroup.Id
+Person.Id:Person
+
+SmallGroup
+-----------
+Leader.Id:Person
+DateStart:Date
+DateEnd:??
+Region:Region
+
+LunchTable //Foodserving
+------------
+PersonId:Person
+DateServed:Date
+IsLunch?
+
+Class
+-------------
+ClassType {Toddler,Nursery,SundaySchool}
+
+Teachers//NurserySundaySchool
+-------------
+Person.Id:Person
+DateServed:Date
+Type:Class.Id
+IsTeacher
+
+Children: //todo
+-------------
+Parent1.Id
+Parent2.Id
+
+Person:
+--------------
+First Name
+Last Name
+Email
+Phone
+Address{
+    Street
+    City
+    State:CA
+    Zip
+}
+Birthday::Date
+Phone
+Area
+Gender
+MembershipDate:Date
+Region:Region.id
+IsMember
+CreateDate:CurrentTimeStamp
+MaritalStatus: {Dating, Single, Married, ??Complicated}
+
