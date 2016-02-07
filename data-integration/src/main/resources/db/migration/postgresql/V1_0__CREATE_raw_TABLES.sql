@@ -1,0 +1,21 @@
+CREATE TABLE imported_roster (
+  id INT,
+  first VARCHAR(32),
+  last VARCHAR(32),
+  mm INT,
+  dd INT,
+  yyyy INT,
+  phone VARCHAR(32),
+  email VARCHAR(64),
+  gender VARCHAR(1),
+  shirt_size VARCHAR(4),
+  events VARCHAR(1),
+  av VARCHAR(1),
+  sunday_school VARCHAR(1),
+  member_care VARCHAR(1),
+  media VARCHAR(1),
+  worship VARCHAR(1),
+  welcome VARCHAR(1),
+  lunch VARCHAR(1),
+  sg VARCHAR(1)
+);
