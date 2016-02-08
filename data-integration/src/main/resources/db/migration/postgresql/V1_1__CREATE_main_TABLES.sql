@@ -166,15 +166,6 @@ CREATE TABLE child_map (
 
 
 /*
- Song tag information.
- */
-CREATE TABLE song_tag (
-  id SERIAL PRIMARY KEY,
-  tag_name VARCHAR(64)
-);
-
-
-/*
  Worship song information.
  */
 CREATE TABLE song (
@@ -182,6 +173,15 @@ CREATE TABLE song (
   title VARCHAR(64),
   added_date DATE DEFAULT CAST(clock_timestamp() AS DATE),
   bpm INTEGER
+);
+
+
+/*
+ Song tag information.
+ */
+CREATE TABLE song_tag (
+  id SERIAL PRIMARY KEY,
+  tag_name VARCHAR(64)
 );
 
 
@@ -198,7 +198,7 @@ CREATE TABLE song_tag_map (
 /*
  A mapping of a worship set to its leader.
  */
-CREATE TABLE worship_set_map (
+CREATE TABLE worship_set (
   id SERIAL PRIMARY KEY,
   for_date DATE,
   leader_id INTEGER REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -208,8 +208,8 @@ CREATE TABLE worship_set_map (
 /*
  A mapping of a worship set to its songs.
  */
-CREATE TABLE worship_set_song_map (
+CREATE TABLE worship_set_map (
   id SERIAL PRIMARY KEY,
   song_id INTEGER REFERENCES song(id) ON DELETE CASCADE ON UPDATE CASCADE,
-  worship_set_id INTEGER REFERENCES worship_set_map(id) ON DELETE CASCADE ON UPDATE CASCADE
+  worship_set_id INTEGER REFERENCES worship_set(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
