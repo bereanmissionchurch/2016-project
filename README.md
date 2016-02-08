@@ -1,2 +1,3 @@
 # 2016-project
-2016-01-30 : Initial meet with the coders @matt's place
+
+Put any module/ad-hoc code that doesn't warrant a separate repo here
