@@ -28,39 +28,39 @@ Because:
 
 ***this section may get stale; refer to the code for latest revisions***
 
-* ```person```
+* ```person```  
   The main table storing various information about persons
-* ```address```
+* ```address```  
   A 1:1 mapping of a person and their address; separated from the person table because addresses are optional
-* ```region``` (R)
+* ```region``` (R)  
   A 1:1 mapping of a geographical region's name and an internal ID; used for saving space and optimizing joins
-* ```attendance_map``` (A)
+* ```attendance_map``` (A)  
   A mapping of a member to their (Sunday) attendance for attendance tracking
-* ```team_type``` (R)
+* ```team_type``` (R)  
   A 1:1 mapping of various Berean member team names and their internal ID's; used for saving space and optimizing joins
-* ```team_map``` (A)
+* ```team_map``` (A)  
   A mapping of a member to their respective team(s) with a column for distinguishing leaders
-* ```small_group```
+* ```small_group```  
   A table storing various information about small groups of the past, present, and future
-* ```small_group_map``` (A)
+* ```small_group_map``` (A)  
   A mapping of a member to their small group(s) of the past, present, and future
-* ```foodserving_map``` (A)
+* ```foodserving_map``` (A)  
   A mapping of a member to when they are serving food
-* ```sunday_school_class_type``` (R)
+* ```sunday_school_class_type``` (R)  
   A 1:1 mapping of a Sunday school class type and an internal ID; used for saving space and optimizing joins
-* ```sunday_school_map``` (A)
+* ```sunday_school_map``` (A)  
   A mapping of a member to when they are serving in Sunday school
-* ```child_map```
+* ```child_map```  
   A mapping of any child to their parent(s)
-* ```song``` (A)
+* ```song``` (A)  
   A table storing various information about songs
-* ```song_tag```
+* ```song_tag```  
   A mapping of a song tag's name and an internal ID; used for saving space and optimizing joins
-* ```song_tag_map``` (A)
+* ```song_tag_map``` (A)  
   A mapping of a song to its tag(s)
-* ```worship_set```
+* ```worship_set```  
   A mapping of a worship set for the past, present, and future to its leader
-* ```worship_set_map```
+* ```worship_set_map```  
   A mapping of a worship set to its songs
 
 
@@ -109,17 +109,17 @@ Required for testing locally, MySQL instructions omitted because the installer i
 **INSTRUCTIONS ARE OSX SPECIFIC**
 
 1. [Install brew](http://brew.sh/)
-1. Install PostgresSQL
+2. Install PostgresSQL
 ```shell
 brew install postgresql
 ```
-1. Initialize a database and start it
+3. Initialize a database and start it
 ```shell
 # change the path as desired
 initdb -D ~/bmc
 pg_ctl -D ~/bmc start
 ```
-1. Connect to the database to set up a user
+4. Connect to the database to set up a user
 ```shell
 psql -d bmc -c "CREATE USER bmc WITH PASSWORD 'bmc';"
 ```
@@ -140,7 +140,7 @@ java -jar ./build/libs/data-integration-$VERSION.jar (migrate|validate|clean|inf
     * any migration scripts going into the shared folder **must** be compatible with both dialects
     * keep dialect-specific migration scripts to a minimum, but put them in their respective folders
     * version naming schemes may collide and are expected to collide between the PostgreSQL folder and the MySQL folder, but may **not** collide with the shared folder
-    * any new migration file should adhere to the following naming convention:
+    * any new migration file should adhere to the following naming convention:  
       ```V[major revision]_[current minor revision + 1]__[DDL/DML keyword]_[description]_[SQL keywords as necessary].sql```
         * major revisions are reserved for contract-breaking changes
         * minor revisions are for all other changes
