@@ -106,10 +106,7 @@ CREATE TABLE sunday_school_map (
 );
 
 
-/*
- A mapping of a child to their parent(s).
- TODO: improve this
- */
+-- TODO: improve this
 CREATE TABLE child_map (
   id INTEGER PRIMARY KEY,
   first_name VARCHAR(32),
@@ -135,9 +132,6 @@ CREATE TABLE song_tag (
 );
 
 
-/*
- A mapping of a song to its tag(s).
- */
 CREATE TABLE song_tag_map (
   id INTEGER PRIMARY KEY,
   song_id INTEGER REFERENCES song(id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -146,9 +140,6 @@ CREATE TABLE song_tag_map (
 );
 
 
-/*
- A mapping of a worship set to its leader.
- */
 CREATE TABLE worship_set (
   id INTEGER PRIMARY KEY,
   for_date DATE,
@@ -157,9 +148,6 @@ CREATE TABLE worship_set (
 );
 
 
-/*
- A mapping of a worship set to its songs.
- */
 CREATE TABLE worship_set_map (
   id INTEGER PRIMARY KEY,
   song_id INTEGER REFERENCES song(id) ON DELETE CASCADE ON UPDATE CASCADE,
