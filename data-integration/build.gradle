@@ -1,9 +1,13 @@
 group 'com.bereanmission'
-version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
 
-sourceCompatibility = 1.5
+sourceCompatibility = 1.7
+
+mainClassName = 'com.bereanmission.core.DataIntegration'
 
 repositories {
     mavenCentral()
@@ -13,7 +17,23 @@ repositories {
 dependencies {
     compile group: 'log4j', name: 'log4j', version: '1.2.17'
     compile group: 'org.flywaydb', name: 'flyway-core', version: '3.2.1'
-    runtime group: 'org.postgresql', name: 'postgresql', version: '9.4.1207.jre7'
-    runtime group: 'mysql', name: 'mysql-connector-java', version: '5.1.38'
+    compile group: 'org.jooq', name: 'jooq', version: '3.6.4'
+    compile group: 'org.jooq', name: 'jooq-meta', version: '3.6.4'
+    compile group: 'org.jooq', name: 'jooq-codegen', version: '3.6.4'
+    compile group: 'org.postgresql', name: 'postgresql', version: '9.4.1207.jre7'
+    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.38'
     testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+
+jar {
+    baseName = project.name
+    version = '0.2.0'
+    manifest {
+        attributes(
+                'Main-Class': mainClassName
+        )
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }

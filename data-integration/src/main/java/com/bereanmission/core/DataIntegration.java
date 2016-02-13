@@ -13,14 +13,15 @@ import java.util.Properties;
  */
 public class DataIntegration {
 
-    private static final String configFile = "config.properties";
-    private static final String databaseType = "postgresql";
-    private Logger logger;
-    private Flyway flyway;
+    private static final String CONFIG_FILE = "config.properties";
+    private static final String DEFAULT_DATABASE_TYPE = "postgresql";
+    private static final String DEFAULT_DATABASE_SCHEMA = "production";
+    private final Logger logger;
+    private final Flyway flyway;
 
 
     // constructor
-    public DataIntegration() {
+    public DataIntegration() throws IOException {
         // initialize some object variables
         logger = Logger.getLogger(DataIntegration.class.getName());
         Properties configProperties = new Properties();
@@ -28,29 +29,35 @@ public class DataIntegration {
         flyway = new Flyway();
 
         try {
-            // seed from config.properties
-            configProperties.load(DataIntegration.class.getClassLoader().getResourceAsStream(configFile));
+            // seed environment variables from config.properties
+            configProperties.load(DataIntegration.class.getClassLoader().getResourceAsStream(CONFIG_FILE));
+            configProperties.setProperty("database.type", configProperties.getProperty("database.type", DEFAULT_DATABASE_TYPE));
+            configProperties.setProperty("database.schema", configProperties.getProperty("database.schema", DEFAULT_DATABASE_SCHEMA));
+            String databaseType = configProperties.getProperty("database.type");
 
             // configure Flyway properties based on databaseType
             flywayProperties.setProperty(
                     "flyway.url",
                     String.format(
-                        "jdbc:%s://%s:%s/%s",
-                        databaseType,
-                        configProperties.getProperty(databaseType + ".host"),
-                        configProperties.getProperty(databaseType + ".port"),
-                        configProperties.getProperty(databaseType + ".database")
+                            "jdbc:%s://%s:%s/%s?user=%s&password=%s",
+                            databaseType,
+                            configProperties.getProperty(databaseType + ".host"),
+                            configProperties.getProperty(databaseType + ".port"),
+                            configProperties.getProperty(databaseType + ".database"),
+                            configProperties.getProperty(databaseType + ".username"),
+                            configProperties.getProperty(databaseType + ".password")
                     )
             );
-            flywayProperties.setProperty("flyway.user", configProperties.getProperty(databaseType + ".username"));
-            flywayProperties.setProperty("flyway.password", configProperties.getProperty(databaseType + ".password"));
-            flywayProperties.setProperty("flyway.schemas", configProperties.getProperty("flyway.schema"));
-            flywayProperties.setProperty("flyway.schemas", configProperties.getProperty("flyway.schema"));
-            flywayProperties.setProperty("flyway.locations", flyway.getLocations()[0] + "/" + databaseType);
+            flywayProperties.setProperty("flyway.schemas", configProperties.getProperty("database.schema"));
+            flywayProperties.setProperty(
+                    "flyway.locations",
+                    "/db/migration/shared,/db/migration/" + configProperties.getProperty("database.type")
+            );
             logger.debug(String.format("Flyway properties: %s", flywayProperties));
             flyway.configure(flywayProperties);
         } catch (IOException ex) {
-            logger.error(String.format("Error loading config properties from %s", configFile), ex);
+            logger.error(String.format("Error loading config properties from %s", CONFIG_FILE));
+            throw ex;
         }
     }
 
@@ -59,7 +66,7 @@ public class DataIntegration {
       Array<String>, where the String element mirrors FlywayDB
       options; multiple options will be executed in array order
      */
-    public void execute(String[] args) {
+    private void execute(String[] args) {
         if (args.length >= 1) {
             for (String arg: args) {
                 logger.info(String.format("Executing step '%s'...", arg));
@@ -89,7 +96,8 @@ public class DataIntegration {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        System.setProperty("org.jooq.no-logo", "true");
         DataIntegration dataIntegration = new DataIntegration();
         dataIntegration.execute(args);
     }

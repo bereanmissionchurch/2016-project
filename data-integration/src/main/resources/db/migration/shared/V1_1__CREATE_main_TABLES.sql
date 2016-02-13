@@ -1,0 +1,169 @@
+CREATE TABLE person (
+  id INTEGER PRIMARY KEY,
+  first_name VARCHAR(32),
+  last_name VARCHAR(32),
+  email VARCHAR(64),
+  phone_number VARCHAR(16),
+  image TEXT,
+  birthdate DATE,
+  gender VARCHAR(1),
+  shirt_size VARCHAR(4),
+  membership_date DATE,
+  address_id INTEGER,
+  region_id INTEGER,
+  is_member BOOLEAN,
+  marital_status VARCHAR(8),
+  created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  modified_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE address (
+  id INTEGER PRIMARY KEY,
+  person_id INTEGER REFERENCES person(id) ON UPDATE CASCADE ON DELETE CASCADE,
+  address_line_1 VARCHAR(47),
+  address_line_2 VARCHAR(47),
+  city VARCHAR(50),
+  state VARCHAR(2) DEFAULT 'CA',
+  zip_code INT,
+  plus_four_code INT,
+  UNIQUE (person_id),
+  created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  modified_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE region (
+  id INTEGER PRIMARY KEY,
+  region_name VARCHAR(20)
+);
+
+
+CREATE TABLE attendance_map (
+  id INTEGER PRIMARY KEY,
+  person_id INTEGER REFERENCES person(id) ON UPDATE CASCADE ON DELETE CASCADE,
+  for_date DATE,
+  added_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE team_type (
+  id INTEGER PRIMARY KEY,
+  team_type VARCHAR(16)
+);
+
+
+CREATE TABLE team_map (
+  id INTEGER PRIMARY KEY,
+  person_id INTEGER REFERENCES person(id) ON UPDATE CASCADE ON DELETE CASCADE,
+  team_type_id INTEGER REFERENCES team_type(id) ON UPDATE CASCADE ON DELETE CASCADE,
+  is_leader BOOLEAN,
+  is_active BOOLEAN,
+  added_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE small_group (
+  id INTEGER PRIMARY KEY,
+  leader_id INTEGER REFERENCES person(id) ON UPDATE CASCADE ON DELETE CASCADE,
+  start_date DATE NOT NULL,
+  end_date DATE,
+  region_id INTEGER REFERENCES region(id) ON UPDATE CASCADE ON DELETE CASCADE,
+  created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  modified_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE small_group_map (
+  id INTEGER PRIMARY KEY,
+  person_id INTEGER REFERENCES person(id) ON UPDATE CASCADE ON DELETE CASCADE,
+  small_group_id INTEGER REFERENCES small_group(id) ON UPDATE CASCADE ON DELETE CASCADE,
+  added_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE foodserving_map (
+  id INTEGER PRIMARY KEY,
+  person_id INTEGER REFERENCES person(id) ON UPDATE CASCADE ON DELETE CASCADE,
+  serve_date DATE,
+  is_lunch BOOLEAN,
+  added_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE sunday_school_class_type (
+  id INTEGER PRIMARY KEY,
+  class_type VARCHAR(16)
+);
+
+
+CREATE TABLE sunday_school_map (
+  id INTEGER PRIMARY KEY,
+  serve_date DATE,
+  class_type_id INTEGER REFERENCES sunday_school_class_type(id) ON UPDATE CASCADE ON DELETE CASCADE,
+  is_teacher BOOLEAN,
+  added_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+/*
+ A mapping of a child to their parent(s).
+ TODO: improve this
+ */
+CREATE TABLE child_map (
+  id INTEGER PRIMARY KEY,
+  first_name VARCHAR(32),
+  last_name VARCHAR(32),
+  parent_1_id INTEGER REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  parent_2_id INTEGER REFERENCES person(id) ON DELETE SET NULL ON UPDATE SET NULL,
+  created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  modified_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE song (
+  id INTEGER PRIMARY KEY,
+  title VARCHAR(64),
+  bpm INTEGER,
+  added_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE song_tag (
+  id INTEGER PRIMARY KEY,
+  tag_name VARCHAR(64)
+);
+
+
+/*
+ A mapping of a song to its tag(s).
+ */
+CREATE TABLE song_tag_map (
+  id INTEGER PRIMARY KEY,
+  song_id INTEGER REFERENCES song(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  song_tag_id INTEGER REFERENCES song_tag(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  added_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+/*
+ A mapping of a worship set to its leader.
+ */
+CREATE TABLE worship_set (
+  id INTEGER PRIMARY KEY,
+  for_date DATE,
+  leader_id INTEGER REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  added_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+/*
+ A mapping of a worship set to its songs.
+ */
+CREATE TABLE worship_set_map (
+  id INTEGER PRIMARY KEY,
+  song_id INTEGER REFERENCES song(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  worship_set_id INTEGER REFERENCES worship_set(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  modified_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
