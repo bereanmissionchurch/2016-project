@@ -11,7 +11,7 @@ import java.util.Properties;
  * Code is split into main() and a Java object to
  * facilitate JUnit testing.
  */
-public class DataIntegration {
+public class Migration {
 
     private static final String CONFIG_FILE = "config.properties";
     private static final String DEFAULT_DATABASE_TYPE = "postgresql";
@@ -21,16 +21,16 @@ public class DataIntegration {
 
 
     // constructor
-    public DataIntegration() throws IOException {
+    public Migration() {
         // initialize some object variables
-        logger = Logger.getLogger(DataIntegration.class.getName());
+        logger = Logger.getLogger(Migration.class.getName());
         Properties configProperties = new Properties();
         Properties flywayProperties = new Properties();
         flyway = new Flyway();
 
         try {
             // seed environment variables from config.properties
-            configProperties.load(DataIntegration.class.getClassLoader().getResourceAsStream(CONFIG_FILE));
+            configProperties.load(Migration.class.getClassLoader().getResourceAsStream(CONFIG_FILE));
             configProperties.setProperty("database.type", configProperties.getProperty("database.type", DEFAULT_DATABASE_TYPE));
             configProperties.setProperty("database.schema", configProperties.getProperty("database.schema", DEFAULT_DATABASE_SCHEMA));
             String databaseType = configProperties.getProperty("database.type");
@@ -56,8 +56,8 @@ public class DataIntegration {
             logger.debug(String.format("Flyway properties: %s", flywayProperties));
             flyway.configure(flywayProperties);
         } catch (IOException ex) {
-            logger.error(String.format("Error loading config properties from %s", CONFIG_FILE));
-            throw ex;
+            logger.error(String.format("Error loading config properties from %s", CONFIG_FILE), ex);
+            System.exit(127);
         }
     }
 
@@ -66,7 +66,7 @@ public class DataIntegration {
       Array<String>, where the String element mirrors FlywayDB
       options; multiple options will be executed in array order
      */
-    private void execute(String[] args) {
+    protected void execute(String[] args) {
         if (args.length >= 1) {
             for (String arg: args) {
                 logger.info(String.format("Executing step '%s'...", arg));
@@ -96,9 +96,4 @@ public class DataIntegration {
         }
     }
 
-    public static void main(String[] args) throws IOException {
-        System.setProperty("org.jooq.no-logo", "true");
-        DataIntegration dataIntegration = new DataIntegration();
-        dataIntegration.execute(args);
-    }
 }

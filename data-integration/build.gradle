@@ -7,7 +7,7 @@ apply plugin: 'eclipse'
 
 sourceCompatibility = 1.7
 
-mainClassName = 'com.bereanmission.core.DataIntegration'
+mainClassName = 'com.bereanmission.core.Main'
 
 repositories {
     mavenCentral()
