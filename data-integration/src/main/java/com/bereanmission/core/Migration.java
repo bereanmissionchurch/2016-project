@@ -1,8 +1,11 @@
 package com.bereanmission.core;
 
+import com.google.common.base.Preconditions;
+import db.migration.V1_5__SEED_main_TABLES_generic;
 import org.apache.log4j.Logger;
 import org.flywaydb.core.Flyway;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -29,11 +32,21 @@ public class Migration {
         flyway = new Flyway();
 
         try {
-            // seed environment variables from config.properties
+            // seed environment-specific variables from config.properties
             configProperties.load(Migration.class.getClassLoader().getResourceAsStream(CONFIG_FILE));
             configProperties.setProperty("database.type", configProperties.getProperty("database.type", DEFAULT_DATABASE_TYPE));
             configProperties.setProperty("database.schema", configProperties.getProperty("database.schema", DEFAULT_DATABASE_SCHEMA));
             String databaseType = configProperties.getProperty("database.type");
+
+            // load and check the seed file
+            String propertiesKey = "import.csv.filepath";
+            String csvFilepath = configProperties.getProperty(propertiesKey);
+            Preconditions.checkArgument(csvFilepath != null, String.format("Key '%s' is required but not declared in '%s'", propertiesKey, CONFIG_FILE));
+            File csvFile = new File(csvFilepath);
+            Preconditions.checkArgument(csvFile.isFile(), "Could not open file " + csvFilepath);
+
+            // dependency injections here
+            V1_5__SEED_main_TABLES_generic.inject(configProperties);
 
             // configure Flyway properties based on databaseType
             flywayProperties.setProperty(
@@ -53,6 +66,11 @@ public class Migration {
                     "flyway.locations",
                     "/db/migration/shared,/db/migration/" + configProperties.getProperty("database.type")
             );
+
+            // configure Flyway placeholder for the seed filepath
+            flywayProperties.setProperty("flyway.placeholderReplacement", "true");
+            flywayProperties.setProperty("flyway.placeholders.inFile", csvFilepath);
+
             logger.debug(String.format("Flyway properties: %s", flywayProperties));
             flyway.configure(flywayProperties);
         } catch (IOException ex) {
